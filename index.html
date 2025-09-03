@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Code to Flowchart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: false });</script>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navbar -->
+<header class="bg-white shadow fixed w-full z-50 top-0">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+    <!-- Brand -->
+    <div class="text-2xl md:text-3xl font-bold">
+      Code to Flowchart
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex space-x-6 md:space-x-8 items-center font-semibold uppercase">
+      <a 
+        href="#"
+        onclick="showSection('home')"
+        class="text-base md:text-lg hover:text-blue-600 transition-colors duration-200"
+      >
+        Home
+      </a>
+      <a
+        href="#flow-info-section"
+        onclick="showSection('home'); document.getElementById('flow-info-section').scrollIntoView({ behavior: 'smooth' }); return false;"
+        class="text-base md:text-lg hover:text-blue-600 transition-colors duration-200"
+      >
+        Steps
+      </a>
+      <a
+        href="#who-code"
+        onclick="showSection('home'); document.getElementById('who-code').scrollIntoView({ behavior: 'smooth' }); return false;"
+        class="text-base md:text-lg hover:text-blue-600 transition-colors duration-200"
+      >
+        Users
+      </a>
+      <a
+        href="#why-choose"
+        onclick="showSection('home'); document.getElementById('why-choose').scrollIntoView({ behavior: 'smooth' }); return false;"
+        class="text-base md:text-lg hover:text-blue-600 transition-colors duration-200"
+      >
+        Features
+      </a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- Main Content -->
+<main class="pt-24 px-4">
+
+  <!-- HOME SECTION (includes everything related to home page) -->
+  <section id="home-section" class="block">
+
+    <!-- Hero Section -->
+    <section
+      class="relative min-h-screen flex flex-col items-center justify-center text-center px-4"
+      style="background-image: url('/static/images/Background.png.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+      <!-- Content -->
+      <h1 class="text-center text-white font-bold leading-tight mb-6"
+          style="font-size: clamp(2rem, 5vw, 3rem);">
+        <span class="block">Code to Flowchart:</span>
+        <span class="block">Visualize, Analyze, and Understand Your Code!</span>
+      </h1>
+      <h4 class="text-white max-w-xl" style="font-size: clamp(1.1rem, 1.5vw, 1.75rem);">
+        Understand logic faster with instant flowchart visualization from your code.
+      </h4>
+      <button onclick="document.getElementById('editor-section').scrollIntoView({ behavior: 'smooth' })"
+        class="bg-blue-600 hover:bg-white-700 transition px-6 py-3 rounded text-white font-semibold shadow-lg">
+        Get Started
+      </button>
+    </section>
+
+    <!-- Unified Editor Section -->
+  <section id="editor-section" class="w-full bg-white py-20">
+    <div class="max-w-4xl mx-auto bg-gray-50 p-8 rounded shadow">
+      <h2 class="text-2xl font-bold mb-4">Paste Your Code (Python, Java, or C)</h2>
+      <textarea id="code" rows="12" class="w-full border p-3 rounded font-mono text-sm mb-4" placeholder="Enter your code here..."></textarea>
+      <div class="flex gap-4 flex-wrap">
+        <button onclick="generateFlowchart()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Generate Flowchart</button>
+        <button onclick="downloadFlowchartPNG()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Download PNG</button>
+      </div>
+      <div id="flowchart" class="mt-6 p-4 border rounded bg-white text-gray-500 text-center">
+        Your flowchart will appear here...
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  
+
+  <!-- JavaScript (Mermaid + Flowchart logic) -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: false });
+
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll("section");
+      sections.forEach((section) => {
+        section.classList.add("hidden");
+      });
+      document.getElementById(sectionId).classList.remove("hidden");
+    }
+
+    function generateFlowchart() {
+      const code = document.getElementById("code").value;
+      if (!code.trim()) {
+        alert("Please enter some code first.");
+        return;
+      }
+      const flowchart = `
+        graph TD
+          A[Start] --> B{Code Detected}
+          B --> C[Processing]
+          C --> D[Flowchart Generated]
+          D --> E[End]
+      `;
+      document.getElementById("flowchart").innerHTML = `<div class="mermaid">${flowchart}</div>`;
+      mermaid.init(undefined, "#flowchart .mermaid");
+    }
+
+    function downloadFlowchartPNG() {
+      const svgElement = document.querySelector("#flowchart svg");
+      if (!svgElement) {
+        alert("Please generate a flowchart first.");
+        return;
+      }
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(svgBlob);
+
+      img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        const png = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = png;
+        link.download = "flowchart.png";
+        link.click();
+      };
+      img.src = url;
+    }
+  </script>
+</body>
+
+   <section id="flow-info-section" class="w-full bg-gradient-to-r from-white to-[#f0f7ff] py-20">
+  <div class="w-full flex flex-col lg:flex-row gap-12 px-6 lg:px-12">
+    <div class="flex-1 space-y-10">
+      <h2 class="font-extrabold text-gray-900 leading-tight text-[clamp(1.75rem,2.5vw,3rem)]">
+        How to Generate a <span class="text-blue-500">Flowchart</span> to Understand Code
+      </h2>
+
+      <div class="reveal flex items-start gap-5" data-delay="0">
+        <div class="bg-blue-600 text-white rounded-full w-14 h-14 flex items-center justify-center font-bold text-lg">
+          1
+        </div>
+        <div>
+          <h3 class="font-semibold text-xl mb-1">Paste Your Code</h3>
+          <p class="text-gray-600 text-base">Simply paste your code into the editor on our platform.</p>
+        </div>
+      </div>
+
+      <div class="reveal flex items-start gap-5" data-delay="100">
+        <div class="bg-purple-600 text-white rounded-full w-14 h-14 flex items-center justify-center font-bold text-lg">
+          2
+        </div>
+        <div>
+          <h3 class="font-semibold text-xl mb-1"> Generate Flowchart</h3>
+          <p class="text-gray-600 text-base">Click the Generate Flowchart</p>
+        </div>
+      </div>
+
+      <div class="reveal flex items-start gap-5" data-delay="200">
+        <div class="bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center font-bold text-lg">
+          3
+        </div>
+        <div>
+          <h3 class="font-semibold text-xl mb-1">Display Flowchart</h3>
+          <p class="text-gray-600 text-base">The flowchart will appear on the screen</p>
+        </div>
+      </div> <div class="reveal flex items-start gap-5" data-delay="300">
+        <div class="bg-yellow-500 text-white rounded-full w-14 h-14 flex items-center justify-center font-bold text-lg">
+          4
+        </div>
+        <div>
+          <h3 class="font-semibold text-xl mb-1">Download</h3>
+          <p class="text-gray-600 text-base">Download the flowchart</p>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1">
+      <div class="reveal bg-white p-8 rounded-2xl shadow-lg" data-delay="400">
+        <h3 class="text-3xl font-bold mb-8 text-gray-800">Supported Languages</h3>
+        <ul class="grid grid-cols-2 gap-4 text-gray-700 text-base mb-8">
+          <li class="flex items-center gap-2">✔ Python</li>
+          <li class="flex items-center gap-2">✔ Java</li>
+          <li class="flex items-center gap-2">✔ C</li>
+        </ul>
+        
+        <button onclick="document.getElementById('editor-section').scrollIntoView({ behavior: 'smooth' })"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold transition text-lg">
+          Try Code Visualization Now
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+    <!-- Who is CodetoFlow for? -->
+      <section id="who-code" class="w-full bg-blue-50 py-20 px-4">
+    <section class="w-full bg-gradient-to-br from-blue-50 to-white py-24 px-4">
+      <div class="max-w-full mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+            Who is <span class="text-indigo-700">CodetoFlow</span> for?
+          </h2>
+        </div>
+
+        <!-- Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 px-6">
+          <div class="reveal bg-white rounded-xl shadow-xl border-t-4 border-blue-500 p-8" data-delay="0">
+            <div class="text-4xl mb-3">🧑‍💻</div>
+            <h3 class="text-2xl font-bold mb-4">Students</h3>
+            <ul class="text-base text-gray-700 space-y-2">
+              <li>✔ Visualize code logic for personal projects</li>
+              <li>✔ Enhance Project Managementy</li>
+              <li>✔ Enhance debugging with logical flow highlights</li>
+              <li>✔ Learn coding concepts visually</li>
+            </ul>
+          </div>
+
+          <div class="reveal bg-white rounded-xl shadow-xl border-t-4 border-purple-500 p-8" data-delay="100">
+            <div class="text-4xl mb-3">🧑‍💻</div>
+            <h3 class="text-2xl font-bold mb-4">Teaching Staff </h3>
+            <ul class="text-base text-gray-700 space-y-2">
+              <li>✔ Integrate coding concepts into study materials</li>
+              <li>✔ Simplify Code Demonstrations</li>
+              <li>✔ Prepare Engaging Lectures</li>
+              <li>✔ Perfect for students and self-learners</li>
+            </ul>
+          </div>
+
+          <div class="reveal bg-white rounded-xl shadow-xl border-t-4 border-green-500 p-8" data-delay="200">
+            <div class="text-4xl mb-3">💼</div>
+            <h3 class="text-2xl font-bold mb-4"> New IT Professionals </h3>
+            <ul class="text-base text-gray-700 space-y-2">
+              <li>✔ Improve Code Documentation</li>
+              <li>✔ Refactor with Confidence</li>
+              <li>✔ Plan and discuss project stages effectively</li>
+              <li>✔Streamline Code Reviews</li>
+            </ul>
+          </div>
+
+          <div class="reveal bg-white rounded-xl shadow-xl border-t-4 border-yellow-400 p-8" data-delay="300">
+            <div class="text-4xl mb-3">📊</div>
+            <h3 class="text-2xl font-bold mb-4"> Coding Projects</h3>
+            <ul class="text-base text-gray-700 space-y-2">
+              <li>✔ Optimize task delegation and tracking</li>
+              <li>✔ Break down complex coding tasks</li>
+              <li>✔ Visualize task dependencies with flowcharts</li>
+              <li>✔ Boost efficiency in project timelines</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Logo scroller (replaces marquee) -->
+        <div class="mt-16 overflow-hidden">
+          <div class="flex animate-scroll gap-12 py-4 px-6">
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/name.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/process.png" alt="process" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/inputoutput.png" alt="input output" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/decision.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/end.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/start.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/arrow.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <!-- duplicate for seamless loop -->
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/name.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/process.png" alt="process" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/inputoutput.png" alt="input output" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/decision.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/end.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/start.png" alt="decision" class="w-full object-contain" />
+            </div>
+            <div class="flex-shrink-0 w-32">
+              <img src="/static/images/arrow.png" alt="decision" class="w-full object-contain" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose CodetoFlow Section -->
+      <section id="why-choose" class="w-full bg-blue-50 py-20 px-4">
+    <section class="w-full bg-blue-50 py-20 px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-extrabold">
+          Why Choose <span class="text-indigo-700">CodetoFlow</span>?
+        </h2>
+      </div>
+
+      <div class="w-full flex flex-col lg:flex-row gap-8 px-6">
+        <div class="grid flex-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div class="reveal bg-white rounded-xl shadow-lg p-10 text-left" data-delay="0">
+            <div class="text-6xl text-blue-600 mb-5">&#x3C;/&#x3E;</div>
+            <h3 class="font-bold text-2xl mb-4">Simplify Complex Code</h3>
+            <p class="text-gray-700 text-lg">
+              Transform intricate code structures into easy-to-understand visual flowcharts.
+            </p>
+          </div>
+
+          <div class="reveal bg-white rounded-xl shadow-lg p-10 text-left" data-delay="100">
+            <div class="text-6xl text-indigo-700 mb-5">&#128101;</div>
+            <h3 class="font-bold text-2xl mb-4"> Automated Flowchart Generation</h3>
+            <p class="text-gray-700 text-lg">
+             Automatically converts code into a visual flowchart, eliminating the need for manual drawing.
+            </p>
+          </div>
+
+          <div class="reveal bg-white rounded-xl shadow-lg p-10 text-left" data-delay="200">
+            <div class="text-6xl text-green-600 mb-5">&#9200;</div>
+            <h3 class="font-bold text-2xl mb-4">Save Time</h3>
+            <p class="text-gray-700 text-lg">
+              Quickly generate diagrams and accelerate your understanding of any codebase.
+            </p>
+          </div>
+
+          <div class="reveal bg-white rounded-xl shadow-lg p-10 text-left" data-delay="300">
+            <div class="text-6xl text-yellow-500 mb-5">&#128218;</div>
+            <h3 class="font-bold text-2xl mb-4">Multi-Language Support</h3>
+            <p class="text-gray-700 text-lg">
+             Supports multiple programming languages like Python, Java, and C, making it versatile for various projects.
+            </p>
+          </div>
+
+          <div class="reveal bg-white rounded-xl shadow-lg p-10 text-left" data-delay="400">
+            <div class="text-6xl text-pink-600 mb-5">&#128202;</div>
+            <h3 class="font-bold text-2xl mb-4">Real-time Visualization</h3>
+            <p class="text-gray-700 text-lg">
+              Generates the flowchart instantly as you paste or type your code, providing immediate feedback.
+            </p>
+          </div>
+
+          <div class="reveal bg-white rounded-xl shadow-lg p-10 text-left" data-delay="500">
+            <div class="text-6xl text-purple-600 mb-5">&#128640;</div>
+            <h3 class="font-bold text-2xl mb-4">Visual Logic</h3>
+            <p class="text-gray-700 text-lg">
+              It uses simple shapes like rectangles for actions and diamonds for decisions to show the program's logic clearly.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Debugging Made Easier -->
+    <section class="bg-blue-50 py-16 px-4 text-center">
+      <div class="w-full px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+          <div class="reveal mb-6" data-delay="0">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              Debugging Made Easier
+            </h2>
+            <p class="text-gray-600 text-base md:text-lg">
+              With <span class="font-semibold">CodetoFlow</span>, identify and resolve issues faster by visualizing your code's flow and structure.
+            </p>
+          </div>
+          <div class="reveal" data-delay="100">
+          <button
+            onclick="document.getElementById('editor-section').scrollIntoView({ behavior: 'smooth' })"
+            class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-base font-semibold py-3 px-6 rounded-full transition duration-300">
+            Start Visualizing Your Code Now
+          </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- Footer -->
+<footer class="bg-white text-gray-700 border-t mt-20">
+  <div class="max-w-7xl mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-3 gap-16">
+    
+    <!-- About -->
+    <div>
+      <h3 class="text-2xl font-bold mb-6">About</h3>
+      <p class="text-lg leading-relaxed">
+        Code-to-Flowchart is a tool that converts Python, Java, and C code into clear flowcharts for easy understanding.
+      </p>
+    </div>
+    
+    <!-- Quick Links -->
+    <div>
+      <h3 class="text-2xl font-bold mb-6">Quick Links</h3>
+      <ul class="space-y-3 text-lg">
+        <li><a href="/" class="hover:text-blue-600">Home</a></li>
+        <li><a href="#features" class="hover:text-blue-600">Features</a></li>
+        <li><a href="#contact" class="hover:text-blue-600">Contact</a></li>
+      </ul>
+    </div>
+    
+    <!-- Contact -->
+    <div>
+      <h3 class="text-2xl font-bold mb-6">Contact</h3>
+      <p class="text-lg font-semibold">Shital Hanumant Bagal</p>
+      <p class="text-lg">
+        Email: <a href="mailto:example@email.com" class="hover:text-blue-600">bagalshital686@email.com</a>
+      </p>
+      <p class="text-lg">Location: Gadegaon, India</p>
+
+      
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t mt-10 py-8 text-center text-lg text-gray-600">
+    &copy; 2025 Code-to-Flowchart.
+</footer>
+
+
+<!-- Shared animation styles -->
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .6s ease-out, transform .6s ease-out;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-scroll {
+    animation: scroll 20s linear infinite;
+  }
+</style>
+
+<!-- Dropdown & Section Logic -->
+<script>
+  function toggleDropdown() {
+    const dropdown = document.getElementById("language-dropdown");
+    dropdown.classList.toggle("hidden");
+  }
+
+  function showSection(language) {
+    console.log("showSection called with", language);
+    const sections = ['home', 'python', 'java', 'c'];
+    sections.forEach(section => {
+      const el = document.getElementById(`${section}-section`);
+      if (el) el.classList.add('hidden');
+    });
+    const target = document.getElementById(`${language}-section`);
+    if (target) {
+      target.classList.remove('hidden');
+      console.log(`${language}-section shown`);
+    } else {
+      console.warn(`No element with id ${language}-section`);
+    }
+  }
+
+  async function generateFlowchart() {
+    const code = document.getElementById('code').value;
+    const div = document.getElementById('flowchart');
+    div.innerHTML = 'Generating flowchart...';
+
+    try {
+      const res = await fetch('/generate_mermaid', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, language: 'python' })
+      });
+
+      const data = await res.json();
+
+      if (!data.mermaid_syntax) {
+        div.innerHTML = `<p class="text-red-500">❌ Error: ${data.error}</p>`;
+        return;
+      }
+
+      const { svg } = await mermaid.render('diagram', data.mermaid_syntax);
+      div.innerHTML = svg;
+    } catch (err) {
+      div.innerHTML = `<p class="text-red-500">❌ Error: ${err.message}</p>`;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const delay = parseInt(entry.target.dataset.delay || 0, 10);
+            setTimeout(() => entry.target.classList.add("visible"), delay);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    reveals.forEach(el => observer.observe(el));
+
+    // Default to home view after DOM is ready
+    showSection('home');
+  });
+</script>
+
+</body>
+</html>

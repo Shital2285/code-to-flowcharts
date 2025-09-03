@@ -1,0 +1,103 @@
+/* Reset some default styles */
+body, h1, h2, h3, p, textarea, select, button {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #d3e8fc;
+  color: #e8eef0;
+ 
+  background-color: #bef5f9; /* Or any color you prefer */
+
+
+  padding: 2rem;
+}
+
+
+/* Main container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(239, 238, 238, 0.08);
+}
+
+/* Title */
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #1a202c;
+}
+
+/* Label and select */
+label {
+  display: block;
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Code textarea */
+textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95rem;
+  resize: vertical;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+/* Button */
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #edf0f4;
+}
+
+/* Flowchart container */
+#flowchart {
+  margin-top: 2rem;
+  overflow-x: auto;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fafafa;
+}
+
+#flowchart p {
+  color: #f7f5f5;
+}
+
+/* Error message */
+.error {
+  color: #dc2626;
+  font-weight: bold;
+}
+/* Home Section Background Image */
